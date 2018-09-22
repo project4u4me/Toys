@@ -84,7 +84,7 @@ class CartController extends Controller
         
         $responseCode = 200;
         $response['success'] = true;
-        $response['data'] = array('input' => $input,'item' => $item, 'token' => $token, 'cart'=>Cache::get($token));
+        $response['data'] = array('item' => $item, 'token' => $token);
         
         return Response::json($response,$responseCode);
     }
@@ -118,7 +118,7 @@ class CartController extends Controller
         
         $responseCode = 200;
         $response['success'] = true;
-        $response['data'] = array('token' => $token, 'cart'=>Cache::get($token));
+        $response['data'] = array('token' => $token);
         
         return Response::json($response,$responseCode);
     }
@@ -140,7 +140,7 @@ class CartController extends Controller
         
         $responseCode = 200;
         $response['success'] = true;
-        $response['data'] = array('token' => $token, 'cart'=>Cache::get($token));
+        $response['data'] = array('token' => $token);
         
         return Response::json($response,$responseCode);
     }

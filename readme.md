@@ -1,65 +1,260 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## About
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+This is very simple app created with Laravel. 
+This task is for Ranan's test and demo is available **[HERE](http://api.myshopify.eu)**
 
-## About Laravel
+## Installation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+**Toys** app needs standards instalation steps. 
+After uploading app set `.env` file with neccesary settings (mainly database creditentials).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+All classes for migration and seeds are set. From comannd line (main Laravel directory) call commands below:
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+`php artisan migrate`
 
-## Learning Laravel
+`php artisan db:seed`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+These commands will create neccesary tables and seed it fake data.
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+## Tests
 
-## Laravel Sponsors
+If you need you can do test using PHP Unit. From main Laravel's directory call command below:
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+`vendor/bin/phpunit`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
+This will do simple test of main route `products` and will check if you have got data in database and if your roting is sets correctly.
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## API
 
-## Security Vulnerabilities
+**Toys** app uses its own API for CRUD (create, retrieve, update and delete) data. 
+Some end-points requres tokens for security reasons. In this siple project Session Id is uses as a token.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+### Get All Products
+
+Products can be retrieved via `App\Api\ProductController`->`getProducts()` using `HTTP-GET` method: 
+
+```
+GET /api/products
+```
+
+The response will contain a `success`-flag and optional `data` and `errors` array.
+
+```
+{
+    "success": true,
+    "data": [
+        {
+          "uuid": "e2a3f36376f53e306c5460ab30729917",
+          "name": "Product name 0",
+          "price": "8.50",
+          "stock": 587
+        },
+        [...]
+        ],
+    "errors": []
+}
+```
+
+### Get Product
+
+Product can be retrieved via `App\Api\ProductController`->`getProduct()` using `HTTP-GET` method: 
+
+```
+GET /api/product/{uuid}
+```
+
+The response will contain a `success`-flag and optional `data` and `errors` array.
+
+```
+{
+    "success": true,
+    "data": {
+        "uuid": "e2a3f36376f53e306c5460ab30729917",
+        "name": "Product name 0",
+        "price": "8.50",
+        "stock": 587,
+        "max_discount": 60,
+        "min_price": 5.1,
+        "vouchers": [
+            {
+                "uuid": "13222e1cd0877347a70724f021656377",
+                "code": "MBO-747-FUJ-904",
+                "start": "2018-09-13",
+                "end": "2018-09-27",
+                "discount": {
+                    "uuid": "1bb17a7c35e7d2bf4825c9424339c09f",
+                    "value": 10,
+                    "name": "10%"
+                }
+            },
+            [...]
+            ]
+    },
+    "errors": []
+}
+```
+
+Possible to get `success` flags, HTTP response codes and error messages:
+
+| Success | HTTP | Message                 | Description                                           |
+| :------ | :--- | :---------------------- | :---------------------------------------------------- |
+| true    | 200  |                         |                                                       |
+| false   | 406  | `uuid` - `incorrect`    | Not provided `uuid` string                            |
+| false   | 404  | `product` - `not-found` | Product with provided `uuid` not exists               |
+
+
+
+### Count Cards
+
+Cards can be counted via `App\Api\CartController`->`countCartItems()` using `HTTP-GET` method: 
+
+```
+GET /api/cart/count/{token}
+```
+
+The response will contain a `success`-flag and optional `data` and `errors` array.
+
+```
+{
+    "success": true,
+    "data": {
+        "items": 7,
+        "cart": {
+            "e2a3f36376f53e306c5460ab30729917": {
+                "uuid": "e2a3f36376f53e306c5460ab30729917",
+                "value": 5.1,
+                "quantity": 1
+            },
+            [...]
+        }
+    },
+    "errors": []
+}
+```
+
+
+### Update Cart Values
+
+Cards values can be updated via `App\Api\CartController`->`updateCart()` using `HTTP-POST` method: 
+
+```
+POST /api/cart/upadte/{token}
+```
+
+An Cart value updating requires params as below:
+| Param           | Type     | Description                         |
+| :-------------- | :------- | :---------------------------------- |
+| uuid            | string   | Uuid of edited item                 |
+| best_price      | decimal  | Price after discounts               |
+| items           | integer  | Number of items                     |
+
+
+The response will contain a `success`-flag and optional `data` and `errors` array.
+
+```
+{
+    "success": true,
+    "data": {
+        "item": {
+            "uuid": "e2a3f36376f53e306c5460ab30729917",
+            "value": 5.1,
+            "quantity": 1
+        },
+        "token": "rQPbDvupVq9bQ4AjyLDoGWqJefnBJkxiojqunmL5"
+    },
+    "errors": []
+}
+```
+
+
+### Delete Cart Item
+
+Cards items can be deleted via `App\Api\CartController`->`deleteCartItem()` using `HTTP-POST` method: 
+
+```
+POST /api/cart/delete/{token}
+```
+
+An Cart value updating requires params as below:
+| Param           | Type     | Description                         |
+| :-------------- | :------- | :---------------------------------- |
+| uuid            | string   | Uuid of deleted item                |
+
+
+The response will contain a `success`-flag and optional `data` and `errors` array.
+
+```
+{
+    "success": true,
+    "data": {
+        "token": "rQPbDvupVq9bQ4AjyLDoGWqJefnBJkxiojqunmL5"
+    },
+    "errors": []
+}
+```
+
+### Buy
+
+Items can be buing (deleted) via `App\Api\CartController`->`buyCart()` using `HTTP-POST` method: 
+
+```
+POST /api/cart/buy/{token}
+```
+
+An Cart buing not requires any params.
+
+
+The response will contain a `success`-flag and optional `data` and `errors` array.
+
+```
+{
+    "success": true,
+    "data": {
+        "token": "rQPbDvupVq9bQ4AjyLDoGWqJefnBJkxiojqunmL5"
+    },
+    "errors": []
+}
+```
+
+
+## WEB
+
+Views are rendered by using Blade templates.
+
+### Get Products (Home Page)
+
+Products can be retrieved via `App\Http\Controllers\ProductController`->`showProducts()` using `HTTP-GET` method: 
+
+```
+GET /products
+```
+
+or
+
+```
+GET /
+```
+
+### Get Product
+
+Product can be retrieved via `App\Http\Controllers\ProductController`->`showProduct()` using `HTTP-GET` method: 
+
+```
+GET /product/{uuid}
+```
+
+
+### Get Cart Items
+
+Items can be retrieved via `App\Http\Controllers\ProductController`->`showCart()` using `HTTP-GET` method: 
+
+```
+GET /cart
+```
+
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Toys app is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
